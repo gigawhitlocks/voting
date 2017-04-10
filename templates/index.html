@@ -1,0 +1,36 @@
+<h2>April Book Club</h2>
+<style type="text/css">
+ tr {
+     padding: .25em;
+     }
+ .votebox {
+     width: 3em;
+ }
+</style>
+
+<form method="POST" action="/vote">
+
+    <table style="border: 1px solid black;">
+        <tr><td>Author</td>
+            <td>Title</td>
+            <td>Score</td>
+            <td>Your Vote</td>
+        </tr>
+
+        {% for book in books %}
+        <tr>
+            <td>{{ book.author }}</td>
+            <td>{{ book.title }}</td>
+            <td>{{ book.score }}</td>
+            <td><input class="votebox"
+                       type="number"
+                       min="0"
+                       max="10"
+                       name="{{ book.id }}"/></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br />
+    <input type="submit" value="Vote" />
+</form>

@@ -51,7 +51,7 @@ def request_loader(request):
 
     user = User()
     user.id = username
-    user.is_authenticated = True # authenticate(request)
+    user.is_authenticated = authenticate(request)
     return user
 
 class LoginForm(Form):
@@ -93,9 +93,17 @@ def close_connection(exception):
         db.close()
 
 @app.route('/')
-@flask_login.login_required
 def index():
-    return "yay"
+    if flask_login.current_user.is_authenticated:
+        return "yay"
+
+    return redirect(url_for('login'))
+
+@app.route("/logout")
+@flask_login.login_required
+def logout():
+    flask_login.logout_user()
+    return "logged out"
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

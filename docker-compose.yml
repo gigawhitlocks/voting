@@ -1,7 +1,13 @@
-version: '2.1'
+version: "3"
 services:
   voting:
-    build:
-      context: .
+    build: "."
     ports:
-      - "5000:5000"
+      - "127.0.0.1:5000:5000"
+    volumes:
+      - ".:/usr/src/app"
+    working_dir: "/usr/src/app"
+    environment:
+      FLASK_APP: voting.py
+      FLASK_DEBUG: 1
+    entrypoint: "flask run -h 0.0.0.0 -p 5000"

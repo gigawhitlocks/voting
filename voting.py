@@ -52,7 +52,6 @@ def request_loader(request):
 
     user = User()
     user.id = username
-    user.is_authenticated = authenticate(request)
     return user
 
 class LoginForm(Form):
@@ -65,6 +64,7 @@ def authenticate(request):
                         headers={"content-type":"application/json"},
                         json={"username":request.form['username'],
                             "password":request.form['password']})
+
     return r.status_code == 200
 
 def init_db():
@@ -93,6 +93,11 @@ def close_connection(exception):
     if db is not None:
         db.close()
 
+@app.route('/vote')
+@flask_login.login_required
+def vote(methods=['POST']):
+    pass
+
 @app.route('/')
 def index():
     if not flask_login.current_user.is_authenticated:
@@ -101,26 +106,13 @@ def index():
     rows = query_db("SELECT * FROM books")
     books = []
     for row in rows:
-        books.append({"title": row['title'],
-                        "author": row['author'],
-                        "score": row['score']})
+        books.append({
+            "id": row['id'],
+            "title": row['title'],
+            "author": row['author'],
+            "score": int(row['score'])})
 
-    output="""<table>
-
-    <tr>
-    <td>Author</td>
-    <td>Title</td>
-    <td>Score</td>
-    <td>Your Vote</td>
-    </tr>
-    """
-    for book in books:
-        output += "<tr><td>" + book['author'] + "</td><td>" + book['title'] \
-                  + "</td><td>" + unicode(math.floor(book['score'])) \
-                  + "</td><td><input type=\"text\" style=\"width:50px;\" min=\"0\" max=\"100\" value=\"0\"/></td></tr>"
-
-    return output + "</table>"
-
+    return render_template('index.html', books=books)
 
 
 @app.route("/logout")

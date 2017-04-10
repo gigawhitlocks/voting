@@ -98,11 +98,15 @@ def close_connection(exception):
 def vote():
     if request.method == 'POST' :
         for vote in request.form :
-            if vote[1]:
+            points = request.form["{}".format(vote)]
+            if points:
+                print(points)
+                print(vote)
+                print(flask_login.current_user.id)
                 query_db('''REPLACE INTO votes(name, points, id)
                 VALUES('{0}', '{1}', '{2}')
                 '''.format(flask_login.current_user.id,
-                           vote[1], vote[0]))
+                           points, vote))
 
     return redirect(url_for('index'))
 
@@ -117,9 +121,12 @@ def index():
         books.append({
             "id": row['id'],
             "title": row['title'],
-            "author": row['author'],
-            "score": int(row['score'])
+            "author": row['author']
         })
+
+    total = query_db('''SELECT * FROM votes''')
+    for x in total:
+        print x
 
     return render_template('index.html', books=books)
 

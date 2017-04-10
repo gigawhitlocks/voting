@@ -93,10 +93,16 @@ def close_connection(exception):
     if db is not None:
         db.close()
 
-@app.route('/vote')
+@app.route('/vote',methods=['POST', 'GET'])
 @flask_login.login_required
-def vote(methods=['POST']):
-    pass
+def vote():
+    if request.method == 'POST' :
+        for vote in request.form :
+            if vote[1]:
+                query_db("INSERT INTO votes (name, points, id) VALUES('" + flask_login.current_user.id + "',' "+\
+                         vote[0] + " ',' " + vote[1] + " ')")
+
+    return redirect(url_for('index'))
 
 @app.route('/')
 def index():
@@ -110,7 +116,8 @@ def index():
             "id": row['id'],
             "title": row['title'],
             "author": row['author'],
-            "score": int(row['score'])})
+            "score": int(row['score'])
+        })
 
     return render_template('index.html', books=books)
 

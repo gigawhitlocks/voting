@@ -99,8 +99,10 @@ def vote():
     if request.method == 'POST' :
         for vote in request.form :
             if vote[1]:
-                query_db("INSERT INTO votes (name, points, id) VALUES('" + flask_login.current_user.id + "',' "+\
-                         vote[0] + " ',' " + vote[1] + " ')")
+                query_db('''REPLACE INTO votes(name, points, id)
+                VALUES('{0}', '{1}', '{2}')
+                '''.format(flask_login.current_user.id,
+                           vote[1], vote[0]))
 
     return redirect(url_for('index'))
 

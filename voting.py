@@ -15,7 +15,8 @@ from wtforms import (PasswordField,
                      validators,
                      Form)
 
-import os
+import math
+import os.path
 import requests
 import sqlite3
 
@@ -94,10 +95,33 @@ def close_connection(exception):
 
 @app.route('/')
 def index():
-    if flask_login.current_user.is_authenticated:
-        return "yay"
+    if not flask_login.current_user.is_authenticated:
+        return redirect(url_for('login'))
 
-    return redirect(url_for('login'))
+    rows = query_db("SELECT * FROM books")
+    books = []
+    for row in rows:
+        books.append({"title": row['title'],
+                        "author": row['author'],
+                        "score": row['score']})
+
+    output="""<table>
+
+    <tr>
+    <td>Author</td>
+    <td>Title</td>
+    <td>Score</td>
+    <td>Your Vote</td>
+    </tr>
+    """
+    for book in books:
+        output += "<tr><td>" + book['author'] + "</td><td>" + book['title'] \
+                  + "</td><td>" + unicode(math.floor(book['score'])) \
+                  + "</td><td><input type=\"text\" style=\"width:50px;\" min=\"0\" max=\"100\" value=\"0\"/></td></tr>"
+
+    return output + "</table>"
+
+
 
 @app.route("/logout")
 @flask_login.login_required
@@ -107,24 +131,19 @@ def logout():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    # Here we use a class of some kind to represent and validate our
-    # client-side form data. For example, WTForms is a library that will
-    # handle this for us, and we use a custom LoginForm to validate.
     form = LoginForm()
     if request.method == 'POST' :
-        # Login and validate the user.
-        # user should be an instance of your `User` class
         if authenticate(request):
             username = request.form['username']
             user = User()
             user.id = username
             users[username] = True
             flask_login.login_user(user)
-
             return redirect(url_for('index'))
 
     return render_template('login.html', form=form)
 
 if __name__ == "__main__":
-    # set the secret key.  keep this really secret:
+    if not os.path.isfile(DATABASE):
+        init_db()
     app.run(host='0.0.0.0')

@@ -73,14 +73,13 @@ def addbook():
         cur = get_db()
         query = '''
         INSERT INTO books (title, author, link, id)
-        VALUES('{0}', '{1}', '{2}', '{3}');
-        '''.format(
-                request.form.get('author',''),
-                request.form.get('title',''),
-                request.form.get('link',''),
-                uuid.uuid4().hex)
+        VALUES(?, ?, ?, ?);'''
 
-        cur.execute(query, ())
+        cur.execute(query,
+                    (request.form.get('author',''),
+                     request.form.get('title',''),
+                     request.form.get('link',''),
+                     uuid.uuid4().hex))
         cur.commit()
         cur.close()
         return redirect(url_for('index'))
@@ -131,16 +130,10 @@ def vote():
         for vote in request.form :
             points = request.form["{}".format(vote)]
             if points:
-
-                query = '''DELETE FROM votes
-                WHERE name='{0}' AND id='{1}';'''.format(
-                    flask_login.current_user.id, vote)
-                cur.execute(query, ())
-
-                query = '''INSERT INTO votes
-                VALUES('{0}', {1}, '{2}');'''.format(
-                    flask_login.current_user.id, points, vote)
-                cur.execute(query, ())
+                query = '''DELETE FROM votes WHERE name=? AND id=?;'''
+                cur.execute(query, (flask_login.current_user.id, vote))
+                query = '''INSERT INTO votes VALUES(?, ?, ?);'''
+                cur.execute(query, (flask_login.current_user.id, points, vote))
 
         cur.commit()
         cur.close()

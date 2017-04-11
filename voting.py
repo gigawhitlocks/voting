@@ -25,7 +25,7 @@ import sqlite3
 app = Flask(__name__)
 app.secret_key = os.getenv('BOOKCLUB_SECRET_KEY')
 if not app.secret_key:
-    exit()
+    exit("Please set environment variable BOOKCLUB_SECRET_KEY to a long secret string")
 
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)

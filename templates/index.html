@@ -8,11 +8,17 @@
  }
 </style>
 
+<p>Hello {{ user }}!<br />
+    You may vote by adjusting the values below and clicking "Vote"<br />
+    You do not need to vote for all books.<br />
+    <a href="/add">Add books to the list here.</a>
+</p>
 <form method="POST" action="/vote">
 
     <table style="border: 1px solid black;">
         <tr><td>Author</td>
             <td>Title</td>
+            <td>Link</td>
             <td>Score</td>
             <td>Your Vote</td>
         </tr>
@@ -21,6 +27,7 @@
         <tr>
             <td>{{ book.author }}</td>
             <td>{{ book.title }}</td>
+            <td>{{ book.link }}</td>
             <td>{{ book.score }}</td>
             <td><input class="votebox"
                        type="number"

@@ -15,13 +15,14 @@ from wtforms import (PasswordField,
                      validators,
                      Form)
 
+import uuid
 import math
 import os.path
 import requests
 import sqlite3
 
 app = Flask(__name__)
-app.secret_key = "boyhowdydemsombewbies"
+app.secret_key = "foobar1234itstimeforsomemorewhoooooo"
 
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
@@ -58,6 +59,34 @@ class LoginForm(Form):
     username = TextField('Username', [validators.Length(min=4, max=25)])
     password = PasswordField('Password')
     submit = SubmitField()
+
+class AddBookForm(Form):
+    author = TextField('Author')
+    title = TextField('Title')
+    link = TextField('Goodreads/Wiki/Amazon Link')
+    submit = SubmitField()
+
+@app.route('/add', methods=['GET', 'POST'])
+@flask_login.login_required
+def addbook():
+    if request.method == 'POST':
+        cur = get_db()
+        query = '''
+        INSERT INTO books (title, author, link, id)
+        VALUES('{0}', '{1}', '{2}', '{3}');
+        '''.format(
+                request.form.get('author',''),
+                request.form.get('title',''),
+                request.form.get('link',''),
+                uuid.uuid4().hex)
+
+        cur.execute(query, ())
+        cur.commit()
+        cur.close()
+        return redirect(url_for('index'))
+
+    form = AddBookForm()
+    return render_template('add_book.html', form=form)
 
 def authenticate(request):
     r = requests.post("https://shouting.online/api/v1/login",
@@ -130,7 +159,8 @@ def index():
             "id": row['id'],
             "title": row['title'],
             "author": row['author'],
-            "score":0
+            "link": row['link'],
+            "score": 0
         })
 
     for book in books:
@@ -142,7 +172,10 @@ def index():
              if r is not None:
                  book['score'] = r
 
-    return render_template('index.html', books=books)
+    books = sorted(books, key=lambda x: -1*x['score'])
+    return render_template('index.html',
+                           books=books,
+                           user=flask_login.current_user.id)
 
 
 @app.route("/logout")

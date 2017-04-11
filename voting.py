@@ -18,11 +18,14 @@ from wtforms import (PasswordField,
 import uuid
 import math
 import os.path
+import os
 import requests
 import sqlite3
 
 app = Flask(__name__)
-app.secret_key = "foobar1234itstimeforsomemorewhoooooo"
+app.secret_key = os.getenv('BOOKCLUB_SECRET_KEY')
+if not app.secret_key:
+    exit()
 
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)

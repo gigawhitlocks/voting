@@ -97,16 +97,24 @@ def close_connection(exception):
 @flask_login.login_required
 def vote():
     if request.method == 'POST' :
+
+        cur = get_db()
         for vote in request.form :
             points = request.form["{}".format(vote)]
             if points:
-                print(points)
-                print(vote)
-                print(flask_login.current_user.id)
-                query_db('''REPLACE INTO votes(name, points, id)
-                VALUES('{0}', '{1}', '{2}')
-                '''.format(flask_login.current_user.id,
-                           points, vote))
+
+                query = '''DELETE FROM votes
+                WHERE name='{0}' AND id='{1}';'''.format(
+                    flask_login.current_user.id, vote)
+                cur.execute(query, ())
+
+                query = '''INSERT INTO votes
+                VALUES('{0}', {1}, '{2}');'''.format(
+                    flask_login.current_user.id, points, vote)
+                cur.execute(query, ())
+
+        cur.commit()
+        cur.close()
 
     return redirect(url_for('index'))
 
@@ -121,12 +129,18 @@ def index():
         books.append({
             "id": row['id'],
             "title": row['title'],
-            "author": row['author']
+            "author": row['author'],
+            "score":0
         })
 
-    total = query_db('''SELECT * FROM votes''')
-    for x in total:
-        print x
+    for book in books:
+         row = query_db('''
+            SELECT sum(points) FROM votes WHERE id='{0}';
+            '''.format(book['id']))
+
+         for r in row[0]:
+             if r is not None:
+                 book['score'] = r
 
     return render_template('index.html', books=books)
 

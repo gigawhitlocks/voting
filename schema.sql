@@ -3,12 +3,9 @@ CREATE TABLE books(title text,
                    author text,
                    id text primary key);
 
-CREATE TABLE users (name text primary key);
 CREATE TABLE votes (name text,
                     points int,
-                    id text,
-                    FOREIGN KEY (name) REFERENCES users(name),
-                    FOREIGN KEY(id) REFERENCES books(id));
+                    id text);
 
 INSERT INTO books (title, author, id)
 VALUES ('The Dispossessed', 'Ursula Leguin', 'b0997afa-cedb-fd6e-217b-63d597910272');

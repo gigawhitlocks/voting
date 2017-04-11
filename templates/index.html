@@ -1,43 +1,64 @@
-<h2>Book Club</h2>
-<style type="text/css">
- tr {
-     padding: .25em;
-     }
- .votebox {
-     width: 3em;
- }
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<style media="screen">
+  .jumbotron {
+    background-image: url({{ splash }});
+    background-size: cover;
+  }
+  .jumbotron h1 {
+    color: white;
+  }
 </style>
 
-<p>Hello {{ user }}!<br />
-    You may vote by adjusting the values below and clicking "Vote"<br />
-    You do not need to vote for all books.<br />
-    <a href="/add">Add books to the list here.</a>
-</p>
-<form method="POST" action="/vote">
+<div class="jumbotron">
+  <div class="container">
+    <h1>Book Club</h1>
 
-    <table style="border: 1px solid black;">
-        <tr><td>Author</td>
-            <td>Title</td>
-            <td>Link</td>
-            <td>Score</td>
-            <td>Your Vote</td>
+  </div>
+</div>
+
+<div class="container">
+  <h3>Hello <span class="text-primary">{{ user }}</span>!</h3>
+  <div class="well">
+    <p>You may vote by adjusting the values below and clicking "Vote"<br />
+      You do not need to vote for all books.<br />
+      <a href="/add">Add books to the list here.</a>
+    </p>
+  </div>
+
+  <form method="POST" action="/vote">
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Author</th>
+          <th>Title</th>
+          <th>Link</th>
+          <th>Score</th>
+          <th>Your Vote</th>
         </tr>
-
+      </thead>
+      <tbody>
         {% for book in books %}
         <tr>
-            <td>{{ book.author }}</td>
-            <td>{{ book.title }}</td>
-            <td><a href="{{ book.link }}">{{ book.description }}</a></td>
-            <td>{{ book.score }}</td>
-            <td><input class="votebox"
-                       type="number"
-                       min="0"
-                       max="10"
-                       name="{{ book.id }}"/></td>
+          <td>{{ book.author }}</td>
+          <td>{{ book.title }}</td>
+          <td>{{ book.link }}</td>
+          <td>{{ book.score }}</td>
+          <td>
+            <input class="form-control"
+            type="number"
+            min="0"
+            max="10"
+            name="{{ book.id }}"/>
+          </td>
         </tr>
         {% endfor %}
+      </tbody>
     </table>
 
     <br />
-    <input type="submit" value="Vote" />
-</form>
+    <input class="btn btn-success" type="submit" value="Vote" />
+  </form>
+
+</div>

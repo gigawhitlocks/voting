@@ -174,7 +174,8 @@ def index():
     books = sorted(books, key=lambda x: -1*x['score'])
     return render_template('index.html',
                            books=books,
-                           user=flask_login.current_user.id)
+                           user=flask_login.current_user.id,
+                           splash=url_for('static', filename='books.jpg'))
 
 
 @app.route("/logout")

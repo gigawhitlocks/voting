@@ -64,6 +64,7 @@ class AddBookForm(Form):
     author = TextField('Author')
     title = TextField('Title')
     link = TextField('Goodreads/Wiki/Amazon Link')
+    description = TextField('Displayed text for link above')
     submit = SubmitField()
 
 @app.route('/add', methods=['GET', 'POST'])
@@ -72,13 +73,14 @@ def addbook():
     if request.method == 'POST':
         cur = get_db()
         query = '''
-        INSERT INTO books (title, author, link, id)
+        INSERT INTO books (title, author, link, description, id)
         VALUES(?, ?, ?, ?);'''
 
         cur.execute(query,
                     (request.form.get('author',''),
                      request.form.get('title',''),
                      request.form.get('link',''),
+                     request.form.get('description',''),
                      uuid.uuid4().hex))
         cur.commit()
         cur.close()
@@ -153,6 +155,7 @@ def index():
             "title": row['title'],
             "author": row['author'],
             "link": row['link'],
+            "description": row['description'],
             "score": 0
         })
 

@@ -1,0 +1,7 @@
+<form method="POST" action="/add" >
+    {{ form.csrf_token }}
+    <div>{{ form.author.label }}: {{ form.author }}</div>
+    <div>{{ form.title.label }}: {{ form.title }} </div>
+    <div>{{ form.link.label }}: {{ form.link }} </div>
+    <div>{{ form.submit() }} </div>
+</form>

@@ -74,7 +74,7 @@ def addbook():
         cur = get_db()
         query = '''
         INSERT INTO books (title, author, link, description, id)
-        VALUES(?, ?, ?, ?);'''
+        VALUES(?, ?, ?, ?, ?);'''
 
         cur.execute(query,
                     (request.form.get('author',''),

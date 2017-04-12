@@ -90,7 +90,9 @@ def addbook():
         return redirect(url_for('index'))
 
     form = AddBookForm()
-    return render_template('add_book.html', form=form)
+    return render_template('add_book.html',
+                            form=form,
+                            splash=url_for('static', filename='books.jpg'))
 
 def authenticate(request):
     r = requests.post("https://shouting.online/api/v1/login",
@@ -196,7 +198,9 @@ def login():
             flask_login.login_user(user)
             return redirect(url_for('index'))
 
-    return render_template('login.html', form=form)
+    return render_template('login.html',
+                            form=form,
+                            splash=url_for('static', filename='books.jpg'))
 
 if __name__ == "__main__":
     if not os.path.isfile(DATABASE):

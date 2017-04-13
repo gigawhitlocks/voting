@@ -4,8 +4,8 @@
 <div class="col-md-4 col-md-offset-4">
   <form method="POST" action="/add" >
     {{ form.csrf_token }}
-    <div class="form-group">{{ form.author.label }}: {{ form.author(class="form-control") }}</div>
     <div class="form-group">{{ form.title.label }}: {{ form.title(class="form-control") }} </div>
+    <div class="form-group">{{ form.author.label }}: {{ form.author(class="form-control") }}</div>
     <div class="form-group">{{ form.link.label }}: {{ form.link(class="form-control") }} </div>
     <div class="form-group">{{ form.description.label }}: {{ form.description(class="form-control") }} </div>
     <div class="form-group">{{ form.submit(class="btn btn-success") }} </div>

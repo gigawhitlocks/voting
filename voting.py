@@ -80,8 +80,8 @@ def addbook():
         VALUES(?, ?, ?, ?, ?);'''
 
         cur.execute(query,
-                    (request.form.get('author',''),
-                     request.form.get('title',''),
+                    (request.form.get('title',''),
+                     request.form.get('author',''),
                      request.form.get('link',''),
                      request.form.get('description',''),
                      uuid.uuid4().hex))

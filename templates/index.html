@@ -27,7 +27,7 @@
         <tr>
           <td>{{ book.author }}</td>
           <td>{{ book.title }}</td>
-          <td>{{ book.link }}</td>
+          <td><a href="{{ book.link }}">{{ book.description }}</a></td>
           <td>{{ book.score }}</td>
           <td>
             <input class="form-control"
